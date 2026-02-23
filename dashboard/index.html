@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>VPS Monitoring</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { background:#0f172a; color:white; font-family:Arial; text-align:center;}
+    .card { margin:20px auto; width:80%; background:#1e293b; padding:20px; border-radius:10px;}
+    canvas { max-width:700px; }
+  </style>
+</head>
+<body>
+
+<h1>VPS Monitoring Dashboard</h1>
+
+<div class="card">
+  <canvas id="cpu"></canvas>
+</div>
+
+<div class="card">
+  <canvas id="memory"></canvas>
+</div>
+
+<div class="card">
+  <canvas id="disk"></canvas>
+</div>
+
+<script>
+fetch('metrics.json')
+.then(res => res.json())
+.then(data => {
+
+function render(id,label,color,values){
+  new Chart(document.getElementById(id),{
+    type:'line',
+    data:{
+      labels:data.timestamps,
+      datasets:[{
+        label:label,
+        data:values,
+        borderColor:color,
+        tension:0.3
+      }]
+    }
+  });
+}
+
+render("cpu","CPU %","red",data.cpu);
+render("memory","Memory %","blue",data.memory);
+render("disk","Disk %","green",data.disk);
+
+});
+</script>
+
+</body>
+</html>
