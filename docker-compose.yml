@@ -5,9 +5,17 @@ services:
     image: prom/node-exporter
     container_name: node-exporter
     restart: unless-stopped
-    expose:
-      - "9100"
-
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro
+    command:
+      - '--path.procfs=/host/proc'
+      - '--path.rootfs=/rootfs'
+      - '--path.sysfs=/host/sys'
+      - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
+    ports:
+      - "127.0.0.1:9100:9100"
   prometheus:
     image: prom/prometheus
     container_name: prometheus
@@ -20,8 +28,8 @@ services:
       - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
       - ./prometheus/alert.rules.yml:/etc/prometheus/alert.rules.yml
       - prometheus-data:/prometheus
-    expose:
-      - "9090"
+    ports:
+      - "127.0.0.1:9090:9090"
 
   alertmanager:
     image: prom/alertmanager

@@ -1,2 +1,5 @@
 .env
 exporter.log
+__pycache__/
+exporter/exporter.log
+*.log
