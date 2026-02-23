@@ -1,0 +1,35 @@
+groups:
+- name: system-alerts
+  rules:
+
+  - alert: HighCPUUsage
+    expr: 100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[1m])) * 100) > 80
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "High CPU usage detected"
+
+  - alert: HighMemoryUsage
+    expr: (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100 < 20
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Memory usage above 80%"
+
+  - alert: DiskUsageHigh
+    expr: (node_filesystem_avail_bytes / node_filesystem_size_bytes) * 100 < 20
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Disk usage above 80%"
+
+  - alert: InstanceDown
+    expr: up == 0
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Instance is down"

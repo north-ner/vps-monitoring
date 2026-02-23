@@ -1,0 +1,11 @@
+global:
+  resolve_timeout: 5m
+
+route:
+  receiver: github
+
+receivers:
+  - name: github
+    webhook_configs:
+      - url: "http://webhook:5000/alert"
+        send_resolved: true
